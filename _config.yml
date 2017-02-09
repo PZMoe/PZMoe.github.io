@@ -1,0 +1,49 @@
+# Basic
+title: PZMoe's 
+subtitle: Good Good Study, Day Day Up
+# welcome_message: <a>想变得更好的咸鱼iOS开发者</a>
+description: 想变得更好的咸鱼iOS开发者
+creator: <a href="https://pzmoe.github.io">@PZMoe</a>
+
+url: "https://pzmoe.github.io"
+
+permalink: /:year/:month/:title/
+
+# Format
+highlighter: plain
+
+# supported colors: blue, green, purple, red, orange or slate. If you need clear, leave it empty.
+cover_color: blue
+
+# The blog button should not be removed.
+blog_button:
+    title: Blog
+    description: 查看博客
+
+# Navigation buttons in the front page.
+nav:
+    # - {title: Projects, description: My Projects, url: 'http://project.onevcat.com'}
+    # - {title: Another Button, description: A button, url: 'http://example.com'}
+
+# Pagination
+gems: [jekyll-paginate]
+paginate: 10
+paginate_path: "page/:num/"
+
+# Comment
+comment:
+    disqus: vno-jekyll
+    # duoshuo: 
+    
+# Social
+social:
+   # weibo: onevcat
+    github: PZMoe
+   # twitter: onevcat
+   # gplus: 107108267983477358170
+    mail: patrick.ustc11@gmail.com
+
+# Google Analytics
+ga:
+    # id: your_ga_id
+    # host: your_host
