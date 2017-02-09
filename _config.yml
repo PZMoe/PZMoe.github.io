@@ -46,4 +46,4 @@ social:
 # Google Analytics
 ga:
     id: UA-91684717-1
-    host: github.io
+    host: auto
