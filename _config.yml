@@ -1,6 +1,6 @@
 # Basic
 title: PZMoe's 
-subtitle: Good Good Study, Day Day Up
+subtitle: 木秀于林，堆出于岸，行高于人
 # welcome_message: <a>想变得更好的咸鱼iOS开发者</a>
 description: 想变得更好的咸鱼iOS开发者
 creator: <a href="https://pzmoe.github.io">@PZMoe</a>
@@ -32,7 +32,7 @@ paginate_path: "page/:num/"
 
 # Comment
 comment:
-    disqus: vno-jekyll
+    disqus: pzmoe
     # duoshuo: 
     
 # Social
