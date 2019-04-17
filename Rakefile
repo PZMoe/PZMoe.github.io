@@ -26,5 +26,5 @@ task :new do
 			file.puts "categories: #{@categories}"
 			file.puts "---"
 	end
-	exec "open -a Mou #{@post_name}"
+	exec "atom #{@post_name}"
 end
