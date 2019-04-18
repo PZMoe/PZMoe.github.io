@@ -5,7 +5,7 @@ date: 2019-04-17 17:56:29 +0800
 categories: iOS develop
 ---
 
-参考链接 https://blog.ibireme.com/2015/11/12/smooth_user_interfaces_for_ios
+参考链接 [https://blog.ibireme.com/2015/11/12/smooth_user_interfaces_for_ios](https://blog.ibireme.com/2015/11/12/smooth_user_interfaces_for_ios)
 
 ### cpu资源消耗问题
 
@@ -28,3 +28,27 @@ dispatch_async(queue, ^{
 ```
 
 - 8.在后台线程提前计算好视图布局，并且对视图布局进行缓存
+- 9.AutoLayout对于复杂视图会产生严重的性能问题
+- 10.大量文本的界面中，文本的宽高计算会占用很大一部分资源，可以考虑使用UILabel内部方法来计算宽高和绘制，需要放到后台线程以免阻塞主线程，或者才用CoreText绘制文本
+- 11.常见的文本控件，其排班和绘制都是在主线程中进行的，显示大量文本时，cpu的压力会非常大，可以考虑用TextKit或者更底层的CoreText对对文本进行异步绘制
+- 12.使用UIImage或者CGImageSource绘制图片不会立即解码，在CALayer被提交到GPU之前，CGImage中的数据才会解码，发生在主线程之中，不可避免。如果想要绕开这个机制，常见的做法是在后台线程先把图片给绘制到CGBitmapContext中，然后从Bitmap直接创建图片
+- 13.由于CoreGraphic方法通常都是线程安全的，所以图像的绘制可以很容易放到后台线程进行
+``` objectivec
+- (void)display {
+    dispatch_async(backgroundQueue, ^{
+        CGContextRef ctx = CGBitmapContextCreate(...);
+        // draw in context...
+        CGImageRef img = CGBitmapContextCreateImage(ctx);
+        CFRelease(ctx);
+        dispatch_async(mainQueue, ^{
+            layer.contents = img;
+        });
+    });
+}
+```
+
+- 14.尽量避免使用圆角、遮罩、阴影等属性，把需要显示的图形在后台线程绘制位图片
+
+
+### ASDK
+ASDK是facebook关于iOS界面流畅的库，使用ASNode等相关类将布局、文本排版、图片文字渲染等操作封装成较小的任务，使用GCD异步并发执行，现在改名为Texture

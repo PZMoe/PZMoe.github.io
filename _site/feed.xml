@@ -5,9 +5,86 @@
     <description>想变得更好的咸鱼iOS开发者</description>
     <link>https://pzmoe.github.io/</link>
     <atom:link href="https://pzmoe.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 09 Feb 2017 10:40:15 +0800</pubDate>
-    <lastBuildDate>Thu, 09 Feb 2017 10:40:15 +0800</lastBuildDate>
+    <pubDate>Thu, 18 Apr 2019 15:33:35 +0800</pubDate>
+    <lastBuildDate>Thu, 18 Apr 2019 15:33:35 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>流畅性和资源消耗的tips</title>
+        <description>&lt;p&gt;参考链接 &lt;a href=&quot;https://blog.ibireme.com/2015/11/12/smooth_user_interfaces_for_ios&quot;&gt;https://blog.ibireme.com/2015/11/12/smooth_user_interfaces_for_ios&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;cpu&quot;&gt;cpu资源消耗问题&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;1.尽量使用轻量对象代替重量的对象，如用CALayer代替UIView&lt;/li&gt;
+  &lt;li&gt;2.不涉及UI操作的对象，尽量放在后台线程创建&lt;/li&gt;
+  &lt;li&gt;3.用StoryBoard创建视图对象时，会消耗更多的资源，性能敏感的界面中尽量不使用StoryBoard&lt;/li&gt;
+  &lt;li&gt;4.尽量推迟对象建立的时间&lt;/li&gt;
+  &lt;li&gt;5.当对象可以复用且复用的代价较低时，可以考虑将对象放入一个缓存池中复用&lt;/li&gt;
+  &lt;li&gt;6.特别的 CALayer和UIView :&lt;br /&gt;
+ 　　CALayer 内部并没有属性，当调用属性方法时，它内部是通过运行时 resolveInstanceMethod 为对象临时添加一个方法，并把对应属性值保存到内部的一个 Dictionary 里，同时还会通知 delegate、创建动画等等，非常消耗资源。UIView 的关于显示相关的属性（比如 frame/bounds/transform）等实际上都是 CALayer 属性映射来的，所以对 UIView 的这些属性进行调整时，消耗的资源要远大于一般的属性。　　
+ 　　应该尽量减少不必要的属性修改&lt;/li&gt;
+  &lt;li&gt;7.对象释放时可以放到后台线程去释放&lt;br /&gt;
+ tips：把对象捕获到 block 中，然后扔到后台队列去随便发送个消息以避免编译器警告，让对象在后台线程销毁
+    &lt;pre&gt;&lt;code class=&quot;language-objectivec&quot;&gt;NSArray *temp = self.array;
+self.array = nil;
+dispatch_async(queue, ^{
+ [tmp class];
+});
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/li&gt;
+  &lt;li&gt;8.在后台线程提前计算好视图布局，并且对视图布局进行缓存&lt;/li&gt;
+  &lt;li&gt;9.AutoLayout对于复杂视图会产生严重的性能问题&lt;/li&gt;
+  &lt;li&gt;10.大量文本的界面中，文本的宽高计算会占用很大一部分资源，可以考虑使用UILabel内部方法来计算宽高和绘制，需要放到后台线程以免阻塞主线程，或者才用CoreText绘制文本&lt;/li&gt;
+  &lt;li&gt;11.常见的文本控件，其排班和绘制都是在主线程中进行的，显示大量文本时，cpu的压力会非常大，可以考虑用TextKit或者更底层的CoreText对对文本进行异步绘制&lt;/li&gt;
+  &lt;li&gt;12.使用UIImage或者CGImageSource绘制图片不会立即解码，在CALayer被提交到GPU之前，CGImage中的数据才会解码，发生在主线程之中，不可避免。如果想要绕开这个机制，常见的做法是在后台线程先把图片给绘制到CGBitmapContext中，然后从Bitmap直接创建图片&lt;/li&gt;
+  &lt;li&gt;13.由于CoreGraphic方法通常都是线程安全的，所以图像的绘制可以很容易放到后台线程进行
+``` objectivec&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;(void)display {
+  dispatch_async(backgroundQueue, ^{
+      CGContextRef ctx = CGBitmapContextCreate(…);
+      // draw in context…
+      CGImageRef img = CGBitmapContextCreateImage(ctx);
+      CFRelease(ctx);
+      dispatch_async(mainQueue, ^{
+          layer.contents = img;
+      });
+  });
+}
+```&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;14.尽量避免使用圆角、遮罩、阴影等属性，把需要显示的图形在后台线程绘制位图片&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;asdk&quot;&gt;ASDK&lt;/h3&gt;
+&lt;p&gt;ASDK是facebook关于iOS界面流畅的库，使用ASNode等相关类将布局、文本排版、图片文字渲染等操作封装成较小的任务，使用GCD异步并发执行，现在改名为Texture&lt;/p&gt;
+</description>
+        <pubDate>Wed, 17 Apr 2019 17:56:29 +0800</pubDate>
+        <link>https://pzmoe.github.io/2019/04/smooth_user_interface/</link>
+        <guid isPermaLink="true">https://pzmoe.github.io/2019/04/smooth_user_interface/</guid>
+        
+        
+        <category>iOS</category>
+        
+        <category>develop</category>
+        
+      </item>
+    
+      <item>
+        <title>linkTest</title>
+        <description>&lt;p&gt;This is &lt;a href=&quot;hanju://seriesLink/aaa?series=_K1yzNbfQe134aKfD03fy&amp;quot;&quot; title=&quot;Title&quot;&gt;aaa&lt;/a&gt; inline link.
+This is &lt;a href=&quot;hanju://seriesLink?series=_K1yzNbfQe134aKfD03fy&amp;quot;&quot; title=&quot;Title&quot;&gt;android&lt;/a&gt; inline link.
+This is &lt;a href=&quot;hanju://&amp;quot;&quot; title=&quot;Title&quot;&gt;ios&lt;/a&gt; inline link.&lt;/p&gt;
+</description>
+        <pubDate>Thu, 15 Jun 2017 17:59:38 +0800</pubDate>
+        <link>https://pzmoe.github.io/2017/06/linktest/</link>
+        <guid isPermaLink="true">https://pzmoe.github.io/2017/06/linktest/</guid>
+        
+        
+        <category>link</category>
+        
+      </item>
     
       <item>
         <title>Hello World - Vno</title>
@@ -65,30 +142,6 @@ $ bundler exec jekyll serve
         <pubDate>Tue, 16 Feb 2016 14:32:24 +0800</pubDate>
         <link>https://pzmoe.github.io/2016/02/hello-world-vno/</link>
         <guid isPermaLink="true">https://pzmoe.github.io/2016/02/hello-world-vno/</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>Sample Post</title>
-        <description>&lt;p&gt;You’ll find this post in your &lt;code&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code&gt;jekyll serve&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
-
-&lt;p&gt;To add new posts, simply add a file in the &lt;code&gt;_posts&lt;/code&gt; directory that follows the convention &lt;code&gt;YYYY-MM-DD-name-of-post.ext&lt;/code&gt; and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.&lt;/p&gt;
-
-&lt;p&gt;Jekyll also offers powerful support for code snippets:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;def print_hi(name)
-  puts &amp;quot;Hi, #{name}&amp;quot;
-end
-print_hi(&amp;#39;Tom&amp;#39;)
-#=&amp;gt; prints &amp;#39;Hi, Tom&amp;#39; to STDOUT.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Check out the &lt;a href=&quot;http://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://talk.jekyllrb.com/&quot;&gt;Jekyll Talk&lt;/a&gt;.&lt;/p&gt;
-
-</description>
-        <pubDate>Mon, 15 Feb 2016 14:32:24 +0800</pubDate>
-        <link>https://pzmoe.github.io/2016/02/sample-post/</link>
-        <guid isPermaLink="true">https://pzmoe.github.io/2016/02/sample-post/</guid>
         
         
       </item>
