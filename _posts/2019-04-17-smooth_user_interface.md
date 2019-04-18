@@ -15,7 +15,7 @@ categories: iOS develop
 - 4.尽量推迟对象建立的时间
 - 5.当对象可以复用且复用的代价较低时，可以考虑将对象放入一个缓存池中复用
 - 6.特别的 CALayer和UIView :  
- 　　CALayer 内部并没有属性，当调用属性方法时，它内部是通过运行时 resolveInstanceMethod 为对象临时添加一个方法，并把对应属性值保存到内部的一个 Dictionary 里，同时还会通知 delegate、创建动画等等，非常消耗资源。UIView 的关于显示相关的属性（比如 frame/bounds/transform）等实际上都是 CALayer 属性映射来的，所以对 UIView 的这些属性进行调整时，消耗的资源要远大于一般的属性。　　
+ 　　CALayer 内部并没有属性，当调用属性方法时，它内部是通过运行时 resolveInstanceMethod 为对象临时添加一个方法，并把对应属性值保存到内部的一个 Dictionary 里，同时还会通知 delegate、创建动画等等，非常消耗资源。UIView 的关于显示相关的属性（比如 frame/bounds/transform）等实际上都是 CALayer 属性映射来的，所以对 UIView 的这些属性进行调整时，消耗的资源要远大于一般的属性。  
  　　应该尽量减少不必要的属性修改
  - 7.对象释放时可以放到后台线程去释放  
  tips：把对象捕获到 block 中，然后扔到后台队列去随便发送个消息以避免编译器警告，让对象在后台线程销毁
@@ -34,17 +34,15 @@ dispatch_async(queue, ^{
 - 12.使用UIImage或者CGImageSource绘制图片不会立即解码，在CALayer被提交到GPU之前，CGImage中的数据才会解码，发生在主线程之中，不可避免。如果想要绕开这个机制，常见的做法是在后台线程先把图片给绘制到CGBitmapContext中，然后从Bitmap直接创建图片
 - 13.由于CoreGraphic方法通常都是线程安全的，所以图像的绘制可以很容易放到后台线程进行
 ``` objectivec
-- (void)display {
-    dispatch_async(backgroundQueue, ^{
-        CGContextRef ctx = CGBitmapContextCreate(...);
-        // draw in context...
-        CGImageRef img = CGBitmapContextCreateImage(ctx);
-        CFRelease(ctx);
-        dispatch_async(mainQueue, ^{
-            layer.contents = img;
-        });
+dispatch_async(backgroundQueue, ^{
+    CGContextRef ctx = CGBitmapContextCreate(...);
+    // draw in context...
+    CGImageRef img = CGBitmapContextCreateImage(ctx);
+    CFRelease(ctx);
+    dispatch_async(mainQueue, ^{
+        layer.contents = img;
     });
-}
+});
 ```
 
 - 14.尽量避免使用圆角、遮罩、阴影等属性，把需要显示的图形在后台线程绘制位图片
