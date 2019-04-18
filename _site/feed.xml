@@ -5,8 +5,8 @@
     <description>想变得更好的咸鱼iOS开发者</description>
     <link>https://pzmoe.github.io/</link>
     <atom:link href="https://pzmoe.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 18 Apr 2019 15:57:13 +0800</pubDate>
-    <lastBuildDate>Thu, 18 Apr 2019 15:57:13 +0800</lastBuildDate>
+    <pubDate>Thu, 18 Apr 2019 15:59:57 +0800</pubDate>
+    <lastBuildDate>Thu, 18 Apr 2019 15:59:57 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -38,7 +38,7 @@ dispatch_async(queue, ^{
   &lt;li&gt;10.大量文本的界面中，文本的宽高计算会占用很大一部分资源，可以考虑使用UILabel内部方法来计算宽高和绘制，需要放到后台线程以免阻塞主线程，或者才用CoreText绘制文本&lt;/li&gt;
   &lt;li&gt;11.常见的文本控件，其排班和绘制都是在主线程中进行的，显示大量文本时，cpu的压力会非常大，可以考虑用TextKit或者更底层的CoreText对对文本进行异步绘制&lt;/li&gt;
   &lt;li&gt;12.使用UIImage或者CGImageSource绘制图片不会立即解码，在CALayer被提交到GPU之前，CGImage中的数据才会解码，发生在主线程之中，不可避免。如果想要绕开这个机制，常见的做法是在后台线程先把图片给绘制到CGBitmapContext中，然后从Bitmap直接创建图片&lt;/li&gt;
-  &lt;li&gt;13.由于CoreGraphic方法通常都是线程安全的，所以图像的绘制可以很容易放到后台线程进行
+  &lt;li&gt;13.由于CoreGraphic方法通常都是线程安全的，所以图像的绘制可以很容易放到后台线程进行
     &lt;pre&gt;&lt;code class=&quot;language-objectivec&quot;&gt;dispatch_async(backgroundQueue, ^{
   CGContextRef ctx = CGBitmapContextCreate(...);
   // draw in context...
